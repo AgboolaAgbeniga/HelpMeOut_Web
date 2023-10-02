@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replay Video</title>
+</head>
+<body>
+    <h1>Replay Video</h1>
+    
+    <!-- HTML5 video player -->
+    <video id="videoPlayer" controls>
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Download button -->
+    <button id="downloadButton">Download Video</button>
+
+    <script>
+        // Listen for messages from popup.js
+        chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+            if (message.videoData) {
+                const videoPlayer = document.getElementById("videoPlayer");
+                
+                // Set the video data as the source of the video element
+                videoPlayer.src = message.videoData;
+                
+                // Add event listener to the download button
+                const downloadButton = document.getElementById("downloadButton");
+                downloadButton.addEventListener("click", function () {
+                    const a = document.createElement("a");
+                    a.href = message.videoData;
+                    a.download = "recorded_video.mp4"; // Set the desired file name
+                    a.style.display = "none";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
